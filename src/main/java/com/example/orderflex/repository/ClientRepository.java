@@ -7,4 +7,5 @@ public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
 
      ClientEntity findByCnpj(String cnpj);
      ClientEntity findByPassword(String password);
+     ClientEntity findByname(String name);
 }
