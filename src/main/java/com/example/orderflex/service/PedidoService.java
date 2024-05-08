@@ -15,5 +15,5 @@ public interface PedidoService {
     List<PedidoDTO> listRequests();
     void deleteRequest(Long id)throws NotFoundClientException;
     PedidoDTO patchRequest(Long id, PedidoDTO pedidoDTO)throws NotFoundClientException;
-    Optional<PedidoEntity> listById(Long id)throws NotFoundClientException;
+    List<PedidoEntity> listById(Long clientId)throws NotFoundClientException;
 }

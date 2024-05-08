@@ -58,7 +58,7 @@ public class PedidoController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<PedidoEntity> getById(@PathVariable ("id") Long id)throws NotFoundClientException{
-        return service.listById(id);
+    public List<PedidoEntity> getById(@PathVariable ("id") Long clientId)throws NotFoundClientException{
+        return service.listById(clientId);
     }
 }

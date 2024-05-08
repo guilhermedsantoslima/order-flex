@@ -119,14 +119,13 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public Optional<PedidoEntity> listById(Long id) throws NotFoundClientException {
-        Optional<PedidoEntity> pedido = pedidoRepository.findById(id);
+    public List<PedidoEntity> listById(Long clientId) throws NotFoundClientException {
+        List<PedidoEntity> pedidos = pedidoRepository.findByClientLoggedId(clientId);
 
-        if(!pedido.isPresent()){
+        if (pedidos.isEmpty()) {
             throw new NotFoundClientException();
         }
 
-        return pedidoRepository.findById(id);
+        return pedidos;
     }
-
 }

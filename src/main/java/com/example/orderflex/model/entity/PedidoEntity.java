@@ -22,7 +22,7 @@ public class PedidoEntity {
     private Long id;
 
     @Column(name = "client_logged_id")
-    private Long ClientLoggedId;
+    private Long clientLoggedId;
 
     @Column(name = "client_name")
     private String clientName;
