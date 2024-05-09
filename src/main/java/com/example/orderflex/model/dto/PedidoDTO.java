@@ -13,11 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PedidoDTO {
 
-    private Long client_id;
-    private String cnpj;
-    private String clientName;
-    private String clientUsername;
-    private String ProductName;
-    private BigDecimal price;
-
+    private String nome;
+    private String nomeProduto;
+    private BigDecimal preco;
 }

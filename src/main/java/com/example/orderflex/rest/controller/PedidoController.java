@@ -1,6 +1,5 @@
 package com.example.orderflex.rest.controller;
 
-import com.example.orderflex.exception.CnpjAlreadyExistsException;
 import com.example.orderflex.exception.NotFoundClientException;
 import com.example.orderflex.model.dto.PedidoDTO;
 import com.example.orderflex.model.entity.PedidoEntity;
@@ -14,51 +13,29 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/pedido")
+@RequestMapping("/pedidos")
 public class PedidoController {
-
     @Autowired
     private PedidoService service;
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PedidoDTO save(@RequestBody @Valid PedidoDTO pedidoDTO) throws NotFoundClientException, CnpjAlreadyExistsException {
-        return service.saveRequest(pedidoDTO);
-
+    public PedidoDTO salvar(@RequestBody @Valid PedidoDTO pedidoDTO){
+        return service.salvarPedido(pedidoDTO);
     }
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/list")
+    @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
-    public List<PedidoDTO> list(){
-        return service.listRequests();
-    }
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable ("id") Long id)throws NotFoundClientException{
-        service.deleteRequest(id);
-    }
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public PedidoDTO update(@PathVariable ("id") Long id,@RequestBody @Valid PedidoDTO pedidoDTO)throws NotFoundClientException{
-        return service.updateRequest(id,pedidoDTO);
-    }
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public PedidoDTO patchUpdate(@PathVariable ("id") Long id, @RequestBody @Valid PedidoDTO pedidoDTO)throws NotFoundClientException{
-        return service.patchRequest(id, pedidoDTO);
+    public List<PedidoDTO> getAll(){
+        return service.listarPedidos();
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<PedidoEntity> getById(@PathVariable ("id") Long clientId)throws NotFoundClientException{
-        return service.listById(clientId);
+    public Optional<PedidoEntity> getById(@PathVariable ("id") Long id)throws NotFoundClientException{
+        return service.listarPeloId(id);
     }
 }

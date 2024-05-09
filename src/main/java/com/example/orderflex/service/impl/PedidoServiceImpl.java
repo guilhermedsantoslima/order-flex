@@ -1,14 +1,8 @@
 package com.example.orderflex.service.impl;
 
-import com.example.orderflex.exception.CnpjAlreadyExistsException;
 import com.example.orderflex.exception.NotFoundClientException;
-import com.example.orderflex.model.dto.ClientDTO;
 import com.example.orderflex.model.dto.PedidoDTO;
-import com.example.orderflex.model.entity.ClientEntity;
-import com.example.orderflex.model.entity.LoginEntity;
 import com.example.orderflex.model.entity.PedidoEntity;
-import com.example.orderflex.repository.ClientRepository;
-import com.example.orderflex.repository.LoginRepository;
 import com.example.orderflex.repository.PedidoRepository;
 import com.example.orderflex.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,112 +14,48 @@ import java.util.Optional;
 
 @Service
 public class PedidoServiceImpl implements PedidoService {
-
     @Autowired
-    private LoginRepository loginRepository;
-    @Autowired
-    private PedidoRepository pedidoRepository;
-    @Autowired
-    private ClientRepository clientRepository;
-    @Override
-    public PedidoDTO saveRequest(PedidoDTO pedidoDTO) throws NotFoundClientException, CnpjAlreadyExistsException {
-        LoginEntity loginEntity = loginRepository.findByClientId(pedidoDTO.getClient_id());
-        if (loginEntity == null) {
-            throw new NotFoundClientException();
-        }
-
-        ClientEntity clientEntity = clientRepository.findByCnpj(pedidoDTO.getCnpj());
-        if (clientEntity.getCnpj() == pedidoDTO.getCnpj()) {
-            throw new CnpjAlreadyExistsException();
-        } else if (clientEntity == null) {
-            throw new NotFoundClientException();
-        }
-
-        PedidoEntity pedidoEntity = new PedidoEntity();
-
-        pedidoEntity.setClientLoggedId(loginEntity.getClientId());
-        pedidoEntity.setClientName(clientEntity.getName());
-        pedidoEntity.setClientUsername(loginEntity.getUsername());
-        pedidoEntity.setProductName(pedidoDTO.getProductName());
-        pedidoEntity.setPrice(pedidoDTO.getPrice());
-
-        pedidoRepository.save(pedidoEntity);
-
-        return pedidoDTO;
-    }
-
+    private PedidoRepository repository;
 
     @Override
-    public PedidoDTO updateRequest(Long id, PedidoDTO pedidoDTO) throws NotFoundClientException{
-        Optional<PedidoEntity> pedidoEntity = pedidoRepository.findById(id);
+    public PedidoDTO salvarPedido(PedidoDTO pedidoDTO) {
+        PedidoEntity pedido = new PedidoEntity();
 
-        if(!pedidoEntity.isPresent()){
-           throw new NotFoundClientException();
-        }
-        pedidoEntity.get().setProductName(pedidoDTO.getProductName());
-        pedidoEntity.get().setPrice(pedidoDTO.getPrice());
+        pedido.setNome(pedidoDTO.getNome());
+        pedido.setNomeProduto(pedidoDTO.getNomeProduto());
+        pedido.setPreco(pedidoDTO.getPreco());
 
-        pedidoRepository.save(pedidoEntity.get());
+        repository.save(pedido);
 
         return pedidoDTO;
     }
 
     @Override
-    public List<PedidoDTO> listRequests() {
-        List<PedidoEntity> pedidoEntities = pedidoRepository.findAll();
+    public List<PedidoDTO> listarPedidos() {
+        List<PedidoEntity> pedidoEntities = repository.findAll();
         List<PedidoDTO> pedidoDTOS = new ArrayList<>();
-        List<LoginEntity> loginEntities = loginRepository.findAll();
 
-        pedidoEntities.forEach(p->{
-             PedidoDTO pedidoDTO = new PedidoDTO();
+        pedidoEntities.forEach(p ->{
+            PedidoDTO pedidoDTO = new PedidoDTO();
 
-             pedidoDTO.setClient_id(p.getClientLoggedId());
-             pedidoDTO.setClientName(p.getClientName());
-             pedidoDTO.setClientUsername(p.getClientUsername());
-             pedidoDTO.setProductName(p.getProductName());
-             pedidoDTO.setPrice(p.getPrice());
+            pedidoDTO.setNome(p.getNome());
+            pedidoDTO.setNomeProduto(p.getNomeProduto());
+            pedidoDTO.setPreco(p.getPreco());
 
-             pedidoDTOS.add(pedidoDTO);
+            pedidoDTOS.add(pedidoDTO);
         });
+
         return pedidoDTOS;
     }
 
     @Override
-    public void deleteRequest(Long id) throws NotFoundClientException{
-        pedidoRepository.deleteById(id);
-    }
+    public Optional<PedidoEntity> listarPeloId(Long id)throws NotFoundClientException {
+        Optional<PedidoEntity>pedido = repository.findById(id);
 
-    @Override
-    public PedidoDTO patchRequest(Long id, PedidoDTO pedidoDTO) throws NotFoundClientException {
-        Optional<PedidoEntity> pedidos = pedidoRepository.findById(id);
-
-        if (!pedidos.isPresent()) {
+        if(!pedido.isPresent()){
             throw new NotFoundClientException();
         }
 
-        PedidoEntity pedidoEntity = pedidos.get();
-
-        if (pedidoDTO.getProductName() != null) {
-            pedidoEntity.setProductName(pedidoDTO.getProductName());
-        }
-
-        if (pedidoDTO.getPrice() != null) {
-            pedidoEntity.setPrice(pedidoDTO.getPrice());
-        }
-
-        pedidoRepository.save(pedidoEntity);
-
-        return pedidoDTO;
-    }
-
-    @Override
-    public List<PedidoEntity> listById(Long clientId) throws NotFoundClientException {
-        List<PedidoEntity> pedidos = pedidoRepository.findByClientLoggedId(clientId);
-
-        if (pedidos.isEmpty()) {
-            throw new NotFoundClientException();
-        }
-
-        return pedidos;
+        return repository.findById(id);
     }
 }

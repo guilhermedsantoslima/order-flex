@@ -21,19 +21,12 @@ public class PedidoEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "client_logged_id")
-    private Long clientLoggedId;
+    @Column(name = "nome")
+    private String nome;
 
-    @Column(name = "client_name")
-    private String clientName;
+    @Column(name = "nome_produto")
+    private String nomeProduto;
 
-    @Column(name = "client_username")
-    private String clientUsername;
-
-    @Column(name = "product_name")
-    private String ProductName;
-
-    @Column(name = "price")
-    private BigDecimal price;
-
+    @Column(name = "preco")
+    private BigDecimal preco;
 }
